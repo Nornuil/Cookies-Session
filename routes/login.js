@@ -1,8 +1,4 @@
-// import { Router } from "express";
 const router = require("express");
-
-// import path from "path";
-
 const loginRouter = new router();
 
 loginRouter.get("/", (req, res) => {
