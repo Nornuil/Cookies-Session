@@ -1,5 +1,7 @@
 const express = require("express");
 require("dotenv").config();
+const { Server: HttpServer } = require("http");
+const { Server: IOServer } = require("socket.io");
 const productos = require("./routes/productos");
 const mensajes = require("./routes/mensajes");
 const login = require("./routes/login");
@@ -9,12 +11,13 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
 const app = express();
+const httpServer = new HttpServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-app.use("/api", productos);
-app.use("/api", mensajes);
-app.use("/api", login);
+
+const io = new IOServer(httpServer);
+app.io = io;
 
 app.use(
   session({
@@ -30,12 +33,9 @@ app.use(
   })
 );
 
-const { Server: HttpServer } = require("http");
-const { Server: IOServer } = require("socket.io");
-
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
-app.io = io;
+app.use("/api", productos);
+app.use("/api", mensajes);
+app.use("/api", login);
 
 conexDB();
 
