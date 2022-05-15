@@ -1,10 +1,7 @@
 const router = require("express");
 const loginRouter = new router();
 
-loginRouter.get("/", (req, res) => {
-  // verifica login
-});
-
+//reset de session
 loginRouter.get("/login", (req, res) => {
   const nombre = req.session?.nombre;
   if (nombre) {
@@ -15,18 +12,19 @@ loginRouter.get("/login", (req, res) => {
   }
 });
 
+//destroy de session
 loginRouter.get("/logout", (req, res) => {
   const nombre = req.session?.nombre;
   if (nombre) {
     req.session.destroy((err) => {
       if (!err) {
-        // console.log("todo ok");
-        res.json({ success: true });
+        res.json({ success: true, msg: "Hasta luego" });
       } else {
         console.log(err);
       }
     });
   } else {
+    res.json({ error: "no esta logueado" });
     // no se existe
   }
 });
